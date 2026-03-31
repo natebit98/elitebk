@@ -1,5 +1,13 @@
 # Project 3
 
+## Setup
+1. cd into /backend and `pip install -r requirements.txt`
+Any time you add a dependency, add the library name to that file.
+
+2. cd back and then into /frontend and `npm install`
+
+3. Get .env keys from someone or something
+
 ## Tech
 Frontend (/frontend): TypeScript, React
 Backend (/backend): Django Rest Framework 
