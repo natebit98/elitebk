@@ -15,10 +15,11 @@ RAG (also /backend): LangChain and Supabase (with the psycog2-binary library so 
 
 ## !! Need to decide AI providers we want to use
 We'll likely do multiple different AI providers cause of free tier limitations. Groq and Gemini looking like frontrunners right now.
+Also, we'll prolly use Tailwind, but we don't have to.
 
 ## Architecture (had some help creating this diagram)
 rag-project/
-├── backend/                # Django DRF Project
+├── backend/                # Django DRF Project (really similar to normal Django)
 │   ├── core/               # Project settings
 │   ├── api/                # Main logic (RAG, Ingestion, Exports)
 │   ├── manage.py
