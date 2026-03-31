@@ -5,4 +5,3 @@ langchain
 langchain-community 
 langchain-postgres
 psycopg2-binary
-psycog2-binary
