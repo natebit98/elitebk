@@ -20,6 +20,7 @@ We'll likely do multiple different AI providers cause of free tier limitations. 
 Also, we'll prolly use Tailwind, but we don't have to.
 
 ## Architecture (had some help creating this diagram)
+```
 rag-project/
 ├── backend/                # Django DRF Project (really similar to normal Django)
 │   ├── core/               # Project settings
@@ -35,6 +36,7 @@ rag-project/
 │   ├── package.json
 │   └── tailwind.config.js
 └── README.md
+```
 
 ## Methodology
 Definitely use AI here as a peer throughout development cause the repo is looking quite complex right now. Especially use for frontend or UI, or if you need help with React / TypeScript or DRF.
