@@ -1,10 +1,14 @@
 import { useState } from 'react';
 import { useChat } from '../hooks/useChat';
+import { useDatasetUpdate } from '../hooks/useDataset';
 
 export default function ChatWindow() {
     const { askQuestion, loading } = useChat();
+    const { updateDataset, loading: datasetLoading, error: datasetError, success: datasetSuccess } = useDatasetUpdate();
     const [query, setQuery] = useState("");
     const [messages, setMessages] = useState<{ role: 'user' | 'assistant', content: string }[]>([]);
+    //add sources state variable
+    const [sources, setSources] = useState<{ snippet: string, metadata: any}[]>([]);
 
     const handleSend = async () => {
         if (!query.trim()) return;
@@ -16,6 +20,8 @@ export default function ChatWindow() {
         const result = await askQuestion(currentQuery);
         if (result) {
             setMessages(prev => [...prev, { role: 'assistant', content: result.answer }]);
+            // Store the sources
+            setSources(result.sources);
         }
     };
 
@@ -47,25 +53,51 @@ export default function ChatWindow() {
                     </div>
                 )}
             </div>
-            
+
             <div className="p-4 bg-white border-t border-gray-200">
-                <div className="flex gap-2">
-                    <input 
-                        className="flex-1 border border-gray-300 p-3 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                        value={query} 
-                        onChange={(e) => setQuery(e.target.value)}
-                        onKeyDown={(e) => e.key === 'Enter' && handleSend()}
-                        placeholder="Type your message..."
-                        disabled={loading}
-                    />
-                    <button 
-                        className="bg-blue-600 hover:bg-blue-700 text-white px-6 rounded-full font-medium transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
-                        onClick={handleSend}
-                        disabled={loading || !query.trim()}
-                    >
-                        Send
-                    </button>
+                <div className="flex justify-end mb-4">
+                <button
+                    className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                    onClick={updateDataset}
+                    disabled={datasetLoading}
+                >
+                    {datasetLoading ? 'Updating Dataset...' : 'Update Dataset'}
+                </button>
                 </div>
+                {datasetError && <p className="text-red-500 mt-2">{datasetError}</p>}
+                {datasetSuccess && <p className="text-green-500 mt-2">Dataset updated successfully!</p>}
+            
+                <div className="p-4 bg-white border-t border-gray-200">
+                    <div className="flex gap-2">
+                        <input 
+                            className="flex-1 border border-gray-300 p-3 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                            value={query} 
+                            onChange={(e) => setQuery(e.target.value)}
+                            onKeyDown={(e) => e.key === 'Enter' && handleSend()}
+                            placeholder="Type your message..."
+                            disabled={loading}
+                        />
+                        <button 
+                            className="bg-blue-600 hover:bg-blue-700 text-white px-6 rounded-full font-medium transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                            onClick={handleSend}
+                            disabled={loading || !query.trim()}
+                        >
+                            Send
+                        </button>
+                    </div>
+                </div>
+
+                {sources.length > 0 && (
+                    <div className="mt-4">
+                    <h3 className="text-lg font-semibold mb-2">Documents Used:</h3>
+                    {sources.map((source, index) => (
+                        <div key={index} className="mb-4">
+                        <p className="text-sm text-gray-600 mb-1">Metadata: {JSON.stringify(source.metadata)}</p>
+                        <p className="text-sm">{source.snippet}</p>
+                        </div>
+                    ))}
+                    </div>
+                )}
             </div>
         </div>
     );
