@@ -17,7 +17,6 @@ def get_llm():
 # get chat response given a user input
 def generate_answer(user_query: str):
     llm = get_llm()
-    vector = get_vectorstore()
 
      # search for relevant docs in db
     docs = retrieve_relevant_documents(user_query)
