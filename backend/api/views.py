@@ -20,7 +20,6 @@ class ChatAnswerView(APIView):
         })
 
 def update_dataset_view(request):
-    league_id = '4328'  # English Premier League ID
-    season = '2022-2023'
-    update_dataset(league_id, season)
+    season = 2024
+    update_dataset(season)
     return HttpResponse("Dataset updated successfully.")
