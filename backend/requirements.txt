@@ -1,7 +1,11 @@
+basketball_reference_scraper
 django 
 djangorestframework 
 django-cors-headers 
 langchain 
 langchain-community 
 langchain-postgres
+langchain-google-genai
 psycopg2-binary
+python-dotenv
+requests

@@ -1,3 +1,25 @@
 from django.shortcuts import render
+from django.http import HttpResponse
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from .services.rag_service import generate_answer
+from .services.dataset_manager import update_dataset
 
-# Create your views here.
+class ChatAnswerView(APIView):
+    def post(self, request): # DRF version of Django's `if request.method == "POST"`
+        query = request.data.get("question")
+        if not query: # no query
+            return Response({"error":"Question is required"}, status=400)
+        result = generate_answer(query)
+
+        # save to database if necessary via ChatMessage model
+
+        return Response({
+            "answer": result["answer"],
+            "sources": result["sources"]
+        })
+
+def update_dataset_view(request):
+    season = 2024
+    update_dataset(season)
+    return HttpResponse("Dataset updated successfully.")
