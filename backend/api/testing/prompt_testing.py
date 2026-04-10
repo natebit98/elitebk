@@ -1,8 +1,9 @@
+## Use python3 -m api.testing.prompt_testing after cd into backend to successfully run the test cases. 
+## Scroll to the bottom to see test cases.
+
+## Note: Current prompt context and format is supplemented by confirmed general knowledge, will be removed after retrieval is working fully
 from api.testing.test_cases import CASES
-from api.services.intent_classifier import classify_intent, INTENT_CONFIG
-from api.services.prompt_builder import prompt_building
 from api.services.rag_service import generate_answer
-from api.services.vector_store import retrieve_relevant_documents
 
 
 def evaluate_intent(actual_intent: str, expected_intent: str) -> bool: # compare actual intent with expected intent
@@ -21,10 +22,10 @@ def evaluate_answer_keywords(actual_answer: str, expected_keywords: list[str]):
 
     return False, missing # return False if accuracy is below 0.8 and return a list of all missing keywords
  
-
-def build_context_from_docs(question: str, intent: str) -> str:
-    docs = retrieve_relevant_documents(question, INTENT_CONFIG[intent]["retrieval_k"]) # acquire the retrieved context for the prompt builder
-    return "\n\n".join([doc.page_content for doc in docs]) # acquire the context in text form for use in the prompt/response
+## Doing below directly during pipeline now
+#def build_context_from_docs(question: str, intent: str) -> str:
+#    docs = retrieve_relevant_documents(question, INTENT_CONFIG[intent]["retrieval_k"]) # acquire the retrieved context for the prompt builder
+#    return "\n\n".join([doc.page_content for doc in docs]) # acquire the context in text form for use in the prompt/response
 
 
 def run_tests():
@@ -35,24 +36,16 @@ def run_tests():
         question = case["question"]
         expected_intent = case["expected_intent"]
         expected_keywords = case["expected_keywords"]
-        test_intent = classify_intent(question).intent # find the intent for the question to use in prompt building
 
-        context_text = build_context_from_docs(question, test_intent) # create the text version of the retrieved context for use in prompt building
-        built_prompt = prompt_building( # dynamic prompt building, User Story 8 working(Woohoo!)
-            question=question,
-            context=context_text,
-            intent=test_intent
-        )
         response = generate_answer(question) # generate response and run full pipeline. Returns intent, response, prompt, and sources
         actual_answer = response["answer"] # answer received
 
-        # test for intent, prompt accuracy, and matching keywords to test response accuracy based on test_file information
+        # test for intent and matching keywords to test response accuracy based on test_file information
         intent_check = evaluate_intent(response["intent"], expected_intent) # Returns True if intent is matching, false if not
         answer_check, missing_keywords = evaluate_answer_keywords( # Returns True and an empty list if there are no missing keywords. For False, returns the missing keywords
             actual_answer,
             expected_keywords
         )
-
 
         results.append({ # list of information for the result of each test
             "id": case["id"], 
@@ -61,7 +54,7 @@ def run_tests():
             "intent_correct": intent_check,
             "answer_correct": answer_check, # based on missing keywords
             "missing_keywords": missing_keywords, # list of all missing keywords
-            "built_prompt": built_prompt, # the actual prompt
+            "built_prompt": response["prompt"], # the actual prompt
             "answer": actual_answer, # generated response
         })
 
