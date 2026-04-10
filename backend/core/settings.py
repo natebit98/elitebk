@@ -31,7 +31,7 @@ SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-(%adwg@-vbkhl24e#hm#k+1r=o
 DEBUG = os.getenv('DEBUG', 'True').lower() == 'true'
 
 ALLOWED_HOSTS = [
-    host.strip() for host in os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',') if host.strip()
+    host.strip() for host in os.getenv('ALLOWED_HOSTS', '*').split(',') if host.strip()
 ]
 
 
@@ -147,8 +147,10 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+CORS_ALLOW_ALL_ORIGINS = os.getenv('CORS_ALLOW_ALL_ORIGINS', 'False').lower() == 'true'
+
 CORS_ALLOWED_ORIGINS = [
-    origin.strip() for origin in os.getenv('CORS_ALLOWED_ORIGINS', 'http://localhost:5173').split(',') if origin.strip()
+    origin.strip().rstrip('/') for origin in os.getenv('CORS_ALLOWED_ORIGINS', 'http://localhost:5173').split(',') if origin.strip()
 ]
 
 REST_FRAMEWORK = { 
@@ -157,10 +159,11 @@ REST_FRAMEWORK = {
     ]
 }
 CSRF_TRUSTED_ORIGINS = [
-    origin.strip() for origin in os.getenv('CSRF_TRUSTED_ORIGINS', 'http://localhost:5173').split(',') if origin.strip()
+    origin.strip().rstrip('/') for origin in os.getenv('CSRF_TRUSTED_ORIGINS', 'http://localhost:5173').split(',') if origin.strip()
 ]
 
 if not DEBUG:
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
     SECURE_SSL_REDIRECT = True
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
