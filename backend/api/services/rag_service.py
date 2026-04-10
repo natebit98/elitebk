@@ -2,11 +2,13 @@ import os
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
+from dotenv import load_dotenv
 from .vector_store import get_vectorstore
 from .vector_store import retrieve_relevant_documents
 from .intent_classifier import classify_intent
 from .prompt_builder import prompt_building
 
+load_dotenv()
 # getter for llm instance (the chat model)
 def get_llm():
     chat_model = os.getenv("GEMINI_CHAT_MODEL", "gemini-3.1-flash-lite-preview")
@@ -42,6 +44,8 @@ def generate_answer(user_query: str):
         intent=intent
     )
 
+    prompt_template = ChatPromptTemplate.from_template("{completed_prompt}") # convert prompt into a form that is accessible by langChain
+
     # do "system" for backend messages, "ai" for AI messages, and "human" for any user input
     # prompt = ChatPromptTemplate.from_messages([
     #    ("system", "You are a helpful assistant. "
@@ -52,8 +56,9 @@ def generate_answer(user_query: str):
     #    ("human", "{question}")
     #])
 
-    chain = prompt | llm | StrOutputParser() # put prompt into LLM (langchain shorthand)
-    response = chain.invoke({"context": context_text, "question" : user_query})
+    chain = prompt_template | llm | StrOutputParser() # put prompt into LLM (langchain shorthand)
+    print("Thinking...")
+    response = chain.invoke({"completed_prompt" : prompt}) # Fix: User Story 8 prompt input
     print(f"Generated response: {response}")
     
     return {
