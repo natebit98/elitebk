@@ -6,7 +6,8 @@ BASE_RULES = """
 You are a basketball analytics assistant.
 The answer is contingent solely upon the retrieved context if relevant and available.
 Do not deviate and create stats, records, or outcomes.
-If the retrieved context is not supporting the result, say so clearly and use general knowledge.
+If the retrieved context is insufficient for a game-specific claim, say so clearly.
+Only use general basketball knowledge for conceptual explanation questions.
 """
 
 def prompt_building(question: str, context: str, intent: str) -> str : # return a prompt targetted to the classified intent with specific instructions for each category
@@ -18,7 +19,7 @@ def prompt_building(question: str, context: str, intent: str) -> str : # return 
         - Answer directly and precisely.
         - Use exact numbers when available.
         - Keep the response concise.
-        - Use all relevant details from the retrieved context and confirmed general knowledge.
+        - Use only the retrieved context for game-specific answers.
 
         Question:
         {question}
@@ -53,10 +54,10 @@ def prompt_building(question: str, context: str, intent: str) -> str : # return 
         Task Type: Prediction
 
         Instructions:
-        - Predict carefully and precisely using only retrieved basketball data and general knowledge.
+        - Predict carefully and precisely using only retrieved basketball data.
         - Use exact numbers when available but be explicit about uncertainty in answer.
         - Support prediction using available data and trends.
-        - Use all relevant details from the retrieved context and confirmed general knowledge.
+        - Use all relevant retrieved evidence.
 
         Must Include:
         {must_include}
@@ -112,8 +113,9 @@ def prompt_building(question: str, context: str, intent: str) -> str : # return 
     Task Type: Basketball Query
 
     Instructions:
-    - Answer using only the retrieved context and general knowledge.
-    - Be clear and concise.
+        - Answer clearly and concisely.
+        - Use retrieved context whenever relevant.
+        - If the answer depends on unavailable game-specific evidence, say so.
 
     Question:
     {question}
