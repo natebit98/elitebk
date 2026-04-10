@@ -5,7 +5,7 @@ from langchain_core.output_parsers import StrOutputParser
 from dotenv import load_dotenv
 from .vector_store import get_vectorstore
 from .vector_store import retrieve_relevant_documents
-from .intent_classifier import classify_intent
+from .intent_classifier import classify_intent, INTENT_CONFIG
 from .prompt_builder import prompt_building
 
 load_dotenv()
@@ -27,7 +27,7 @@ def generate_answer(user_query: str):
     intent = intent_result.intent
 
      # search for relevant docs in db
-    docs = retrieve_relevant_documents(user_query)
+    docs = retrieve_relevant_documents(user_query, INTENT_CONFIG[intent]["retrieval_k"])
     print(f"Retrieved {len(docs)} documents:")
     for doc in docs:
         print(f"Document: {doc.metadata}")
