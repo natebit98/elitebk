@@ -1,7 +1,9 @@
 import { useState } from 'react';
+import { useAuth } from '../context/AuthContext';
 
 export const useChat = () => {
     const [loading, setLoading] = useState(false);
+    const { token } = useAuth();
     const API_URL = import.meta.env.VITE_API_URL;
 
     const askQuestion = async (question: string) => {
@@ -9,7 +11,10 @@ export const useChat = () => {
         try {
             const res = await fetch(`${API_URL}/api/ask/`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Token ${token}`,
+                },
                 body: JSON.stringify({ question })
             });
 
@@ -27,4 +32,4 @@ export const useChat = () => {
     };
 
     return { askQuestion, loading };
-}
+};
