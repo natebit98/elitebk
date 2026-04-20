@@ -7,6 +7,8 @@ from rest_framework.permissions import AllowAny, BasePermission
 from rest_framework.authtoken.models import Token
 from .services.rag_service import generate_answer
 from .services.dataset_manager import update_dataset, update_dataset_from_json
+from django.contrib.auth.models import User
+from .models import UserProfile
 
 DATASET_FOLDER = os.path.join(os.path.dirname(__file__), "../dataset")
 
