@@ -46,10 +46,16 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
       <div className="bg-white p-8 rounded-xl shadow-lg border border-gray-100 w-full max-w-sm">
-        <h1 className="text-2xl font-bold text-center text-blue-600 mb-6">EliteChat Login</h1>
+        <div className="text-center mb-4">
+          {/* Add Basketball Logo*/}
+          <span className="text-4xl">🏀</span> 
+          <p className="text-xs font-semibold text-gray-400 tracking-widest uppercase mt-1">EliteBK</p> {/* Brand NAme here*/}
+        </div>
+        <h1 className="text-2xl font-bold text-center mb-6" style={{ color: '#111827' }}>Welcome Back</h1>
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Username</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Username</label> {/* username */}
+            {/*display their username here*/}
             <input
               type="text"
               value={username}
@@ -61,6 +67,7 @@ export default function LoginPage() {
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
+            {/*ask for the password here*/}
             <input
               type="password"
               value={password}
@@ -74,7 +81,7 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={loading}
-            className="bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="bg-gray-800 hover:bg-gray-700 text-white py-3 rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed" 
           >
             {loading ? 'Logging in...' : 'Log In'}
           </button>
